@@ -63,7 +63,7 @@ export default {
   methods: {
     async loadAdrData() {
       try {
-        const response = await axios.get('/dist/assets/adr-data.json');
+        const response = await axios.get('assets/adr-data.json');
         this.adrData = response.data;
       } catch (error) {
         console.error('Error loading ADR data:', error);

@@ -25,8 +25,8 @@ monaco: true
 aspectRatio: 16/9
 
 themeConfig:
-  logo: "/images/nhr-tu-logo.png"
-  darkLogo: "/images/nhr-tu-dark-logo.png"
+  logo: "images/nhr-tu-logo.png"
+  darkLogo: "images/nhr-tu-dark-logo.png"
   logoWidth: 180
   github: https://github.com/FoamScience
   footer: Bayesian Optimization for CFD meshing tasks

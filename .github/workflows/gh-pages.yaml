@@ -27,7 +27,11 @@ jobs:
 
       - name: Build Slidev site
         working-directory: slidev
-        run: npx slidev build
+        run: |
+          ADR_PATH=../ADRs ADR_REPO=https://github.com/FoamScience/meshingo ADR_REF=main npm run adr
+          mv dist/assets/adr-data.json .
+          npm run build
+          mv adr-data.json dist/assets/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

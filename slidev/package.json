@@ -12,6 +12,7 @@
     "@slidev/cli": "^51.5.0",
     "@slidev/theme-default": "latest",
     "@slidev/theme-seriph": "latest",
+    "axios": "^1.8.4",
     "esbuild": "^0.25.2",
     "gray-matter": "^4.0.3",
     "node-tikzjax": "^1.0.3",
