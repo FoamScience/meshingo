@@ -1,0 +1,104 @@
+problem:
+  name: CFD
+  template_case: '../template_case'
+  type: 'optimization'
+  models: auto
+  parameters:
+    minEdgeLengthCoeff:
+      type: range
+      value_type: float
+      bounds: [1e-4, 1]
+      log_scale: False
+    curvatureCoeff:
+      type: range
+      value_type: float
+      bounds: [1e-4, 1]
+      log_scale: False
+    sharpnessCoeff:
+      type: range
+      value_type: float
+      bounds: [1e-4, 1]
+      log_scale: False
+    SVRCoeff:
+      type: range
+      value_type: float
+      bounds: [0, 3.0]
+      log_scale: False
+    flatnessCoeff:
+      type: range
+      value_type: float
+      bounds: [1e-4, 1]
+      log_scale: False
+    maxMinSizeRatio:
+      type: range
+      value_type: float
+      bounds: [10, 1000]
+      log_scale: True
+  scopes:
+    "/featuresDict":
+      minEdgeLengthCoeff: "minEdgeLengthCoeff"
+      curvatureCoeff: "curvatureCoeff"
+      sharpnessCoeff: "sharpnessCoeff"
+      SVRCoeff: "SVRCoeff"
+      flatnessCoeff: "flatnessCoeff"
+      maxMinSizeRatio: "maxMinSizeRatio"
+  objectives:
+    UncertaintyOnCellSize:
+      mode: 'shell'
+      command: ['awk', '-F', '[()]', '/Cell Size/{print $2}', 'log.predict']
+      threshold: 0.1
+      minimize: True
+      lower_is_better: True
+    CellSize:
+      mode: 'shell'
+      command: ['awk', '/Cell Size/{print $3}', 'log.predict']
+      threshold: 1e-5
+      minimize: True
+      lower_is_better: True
+    UncertaintyOnMeshIssues:
+      mode: 'shell'
+      command: ['awk', '-F', '[()]', '/Mesh issues/{print $2}', 'log.predict']
+      threshold: 0
+      minimize: True
+      lower_is_better: True
+    MeshIssues:
+      mode: 'shell'
+      command: ['awk', '/Mesh issues/{print $3}', 'log.predict']
+      threshold: 0
+      minimize: True
+      lower_is_better: True
+    UncertaintyOnCellCount:
+      mode: 'shell'
+      command: ['awk', '-F', '[()]', '/Cell Count/{print $2}', 'log.predict']
+      threshold: 0.1
+      minimize: True
+      lower_is_better: True
+    UncertaintyOnSurfaceDifference:
+      mode: 'shell'
+      command: ['awk', '-F', '[()]', '/Surface to mesh difference/{print $2}', 'log.predict']
+      threshold: 0
+      minimize: True
+      lower_is_better: True
+
+meta:
+  case_subdirs_to_clone:
+    - Allrun.stage2
+    - featuresDict
+  clone_destination: "../trials/"
+  case_run_mode: local
+  case_run_command: ['./Allrun.stage2', 'cfd', 'MeshSizeGuesser']
+  n_trials: 150
+  n_parallel_trials: 10
+  ttl_trial: 120
+  init_poll_wait: 15
+  poll_factor: 1.3
+  timeout: 24
+  use_saasbo: False
+  n_pareto_points: 5
+  stopping_strategy:
+    improvement_bar: 1e-3
+    min_trials: 30
+    window_size: 15
+
+validate:
+  cross_validate: False
