@@ -22,15 +22,15 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: meshingo/slidev
+        working-directory: slidev
         run: npm ci
 
       - name: Build Slidev site
-        working-directory: meshingo/slidev
+        working-directory: slidev
         run: npx slidev build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: meshingo/slidev/dist
+          publish_dir: slidev/dist
