@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# USAGE: 
+# $1: Target STL file name, without extension
+# $2: Stage 1 problem name
+
+logfile="log.predict"
+stlfile="../../testing_dataset/$1.stl"
+edgesfile="../../testing_dataset/feature_lines/cfd_features.obj"
+echo "Using STL: $stlfile with feature edges at $edgesfile" > "$logfile"
+
+function read_csv() {
+    awk -F ',' '
+    NR==1 { 
+        for (i=1; i<=NF; i++) 
+            if ($i == column) colnum = i 
+    } 
+    $1 == filename { 
+        print $colnum 
+    }' column="$2" filename="$1" "$3"
+}
+
+set -e
+
+cp "$stlfile" constant/triSurface/surface.stl
+cp "$edgesfile" constant/triSurface/edges.obj
+
+foamDictionary -entry SVR -value -set "$(read_csv "$(basename "$stlfile")" "surface_volume_ratio" "../../testing_dataset/geometric_features.csv")" featuresDict
+foamDictionary -entry curvature -value -set "$(read_csv "$(basename "$stlfile")" "max_curvature" "../../testing_dataset/geometric_features.csv")" featuresDict
+foamDictionary -entry flatness -value -set "$(read_csv "$(basename "$stlfile")" "flatness" "../../testing_dataset/geometric_features.csv")" featuresDict
+foamDictionary -entry sharpness -value -set "$(read_csv "$(basename "$stlfile")" "sharpness" "../../testing_dataset/geometric_features.csv")" featuresDict
+foamDictionary -entry minEdgeLength -value -set "$(read_csv "$(basename "$stlfile")" "min_edge_length" "../../testing_dataset/geometric_features.csv")" featuresDict
+
+echo "{" > coeffs.json
+echo '"minEdgeLengthCoeff": '"$(foamDictionary -entry minEdgeLengthCoeff -value featuresDict)"',' >> coeffs.json
+echo '"curvatureCoeff": '"$(foamDictionary -entry curvatureCoeff -value featuresDict)"',' >> coeffs.json
+echo '"sharpnessCoeff": '"$(foamDictionary -entry sharpnessCoeff -value featuresDict)"',' >> coeffs.json
+echo '"SVRCoeff": '"$(foamDictionary -entry SVRCoeff -value featuresDict)"',' >> coeffs.json
+echo '"flatnessCoeff": '"$(foamDictionary -entry flatnessCoeff -value featuresDict)"',' >> coeffs.json
+echo '"maxMinSizeRatio": '"$(foamDictionary -entry maxMinSizeRatio -value featuresDict)" >> coeffs.json
+echo "}" >> coeffs.json
+
+# Run the surrogate model
+uv run predict-cell-size --name "$(realpath "../../stage1/$2")" --coeffs coeffs.json  | tee $logfile

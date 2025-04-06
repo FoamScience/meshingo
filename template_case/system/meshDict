@@ -1,0 +1,32 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+FoamFile
+{
+    version         2;
+    format          ascii;
+    class           dictionary;
+    object          meshDict;
+}
+
+#include "../featuresDict"
+
+bulkSize #calc "$minEdgeLength*$maxMinSizeRatio";
+
+maxCellSize     $bulkSize;
+surfaceFile     "constant/triSurface/surface.stl";
+
+edgeMeshRefinement
+{
+    featureEdges {
+        edgeFile "constant/triSurface/edges.obj";
+        cellSize $minEdgeLength;
+    }
+}
+
+// ************************************************************************* //

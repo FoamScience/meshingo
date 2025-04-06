@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -e
+logfile="log.$(basename "$PWD")"
+
+# Get features and compute the smallest cell size to find a similar surface
+SVR=$(foamDictionary -entry SVR -value featuresDict)
+curv=$(foamDictionary -entry curvature -value featuresDict)
+flat=$(foamDictionary -entry flatness -value featuresDict)
+sharp=$(foamDictionary -entry sharpness -value featuresDict)
+similar_surface=$(uv run get-similar-surface --svr "$SVR" --curvature "$curv" --flatness "$flat" --sharpness "$sharp" -n 1 ../../training_dataset/geometric_features.csv)
+similarity=$(echo "$similar_surface" | awk -F, '{print $2+0}')
+similar_surface=$(echo "$similar_surface" | awk -F, '{print $1}')
+echo "Using STL: $similar_surface with similarity = $similarity" > "$logfile"
+cp "../../training_dataset/$similar_surface" constant/triSurface/surface.stl
+cp "../../training_dataset/$(basename "$similar_surface" .stl).obj" constant/triSurface/edges.obj
+
+# Compute smallest cell size needed to detect surface features
+alpha=$(foamDictionary -entry minEdgeLengthCoeff -value featuresDict)
+beta=$(foamDictionary -entry curvatureCoeff -value featuresDict)
+gamma=$(foamDictionary -entry sharpnessCoeff -value featuresDict)
+delta=$(foamDictionary -entry SVRCoeff -value featuresDict)
+epsilon=$(foamDictionary -entry flatnessCoeff -value featuresDict)
+cell_size=$(uv run compute-cell-size --alpha "$alpha" --beta "$beta" --gamma "$gamma" --delta "$delta" --epsilon "$epsilon" "$similar_surface" ../../training_dataset/geometric_features.csv)
+echo "Feature cell size: $cell_size" >> "$logfile"
+foamDictionary -entry minEdgeLength -value -set "$cell_size" featuresDict
+
+export OCTREE_THRESHOLD="${STAGE1_MAX_OCTREES:-9}"
+
+# Run the mesher in background
+cartesianMesh > log.cartesianMesh 2>&1 &
+mesh_pid=$!
+
+# Fail if the mesher fails or tries to allocate too much RAM
+tail -Fn0 log.cartesianMesh | awk -v pid="$mesh_pid" -v threshold="$OCTREE_THRESHOLD" '
+/Requested cell size corresponds to octree level/ {
+    level = $NF
+    if (level >= threshold) {
+        print "Killing cartesianMesh (PID: " pid ") due to octree level " level
+        system("kill -9 " pid)
+        exit 1
+    }
+}
+/There are no cells in the mesh/ {
+    print "No cells in mesh, failing trial"
+    system("kill -9 " pid)
+    exit 1
+}
+/FOAM exiting/ {
+    print "Killing cartesianMesh (PID: " pid ") due to OpenFOAM fatal error "
+    system("kill -9 " pid)
+    exit 1
+}
+/\[stack trace\]/ {
+    print "Killing cartesianMesh (PID: " pid ") due to a segfault"
+    system("kill -9 " pid)
+    exit 1
+}
+/fatal flex/ {
+    print "Killing cartesianMesh (PID: " pid ") due to a fatal flex scanner"
+    system("kill -9 " pid)
+    exit 1
+}
+/End/ {
+    print "Detected End in log. Exiting successfully."
+    exit 0
+}' | tee "$logfile"
+
+# Compute objectives here, because these might fail
+uv run compute-objectives --cell-count > log.cell_count
+uv run compute-objectives --cell-size > log.cell_size
+uv run compute-objectives --difference > log.difference
+uv run compute-objectives --issues > log.issues

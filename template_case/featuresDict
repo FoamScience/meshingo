@@ -1,0 +1,43 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2312                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+FoamFile
+{
+    version         2;
+    format          ascii;
+    class           dictionary;
+    object          featuresDict;
+}
+
+maxMinSizeRatio 100;
+
+minEdgeLengthCoeff 1;
+
+curvatureCoeff  1;
+
+sharpnessCoeff  1;
+
+SVRCoeff        1;
+
+flatnessCoeff   1;
+
+minEdgeLength   0.000296697;
+
+curvature       0.5;
+
+sharpness       0.5;
+
+SVR             0.8;
+
+flatness        0.4;
+
+minSurfaceDensity 1000.0;
+
+minSurfaceDensityScaling -3.0;
+
+// ************************************************************************* //
