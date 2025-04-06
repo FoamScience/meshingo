@@ -1,0 +1,113 @@
+[
+  {
+    "title": "Use of a 2-Stage Bayesian Optimization Framework",
+    "status": "enforced",
+    "related": [],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-03-02T00:00:00.000Z",
+    "fileName": "0000-bayesian-optimization-framework.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0000-bayesian-optimization-framework.md"
+  },
+  {
+    "title": "Selection of Gaussian Process (GP) as Surrogate Model",
+    "status": "enforced",
+    "related": [
+      "Use of a 2-Stage Bayesian Optimization Framework"
+    ],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-03-02T00:00:00.000Z",
+    "fileName": "0001-gp-as-surrogate-model.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0001-gp-as-surrogate-model.md"
+  },
+  {
+    "title": "STL Representation and Featurization",
+    "status": "enforced",
+    "related": [
+      "Use of a 2-Stage Bayesian Optimization Framework",
+      "Selection of Gaussian Process (GP) as Surrogate Model"
+    ],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-03-03T00:00:00.000Z",
+    "fileName": "0002-stl-featurization.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0002-stl-featurization.md"
+  },
+  {
+    "title": "Objective Functions in Stage 1",
+    "status": "enforced",
+    "related": [
+      "Use of a 2-Stage Bayesian Optimization Framework",
+      "Selection of Gaussian Process (GP) as Surrogate Model",
+      "STL Representation and Featurization"
+    ],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-03-03T00:00:00.000Z",
+    "fileName": "0003-objectives-stage-1.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0003-objectives-stage-1.md"
+  },
+  {
+    "title": "Optimization Strategy in Stage 2",
+    "status": "deprecated",
+    "related": [
+      "Use of a 2-Stage Bayesian Optimization Framework",
+      "Objective Functions in Stage 1",
+      "Selection of Gaussian Process (GP) as Surrogate Model"
+    ],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-04-04T00:00:00.000Z",
+    "fileName": "0004-optimization-stratey-stage-2.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0004-optimization-stratey-stage-2.md"
+  },
+  {
+    "title": "Cross-Validation",
+    "status": "under-review",
+    "related": [
+      "Use of a 2-Stage Bayesian Optimization Framework",
+      "Selection of Gaussian Process (GP) as Surrogate Model",
+      "STL Representation and Featurization"
+    ],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-03-03T00:00:00.000Z",
+    "fileName": "0005-cross-validation.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0005-cross-validation.md"
+  },
+  {
+    "title": "Meshing Tool Selection for Stage 1",
+    "status": "enforced",
+    "related": [
+      "Use of a 2-Stage Bayesian Optimization Framework",
+      "STL Representation and Featurization"
+    ],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-03-03T00:00:00.000Z",
+    "fileName": "0006-meshing-tool-stage-1.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0006-meshing-tool-stage-1.md"
+  },
+  {
+    "title": "Meshingo CLI",
+    "status": "enforced",
+    "related": [
+      "Use of a 2-Stage Bayesian Optimization Framework",
+      "Meshing Tool Selection for Stage 1"
+    ],
+    "decision_makers": [
+      "elwardi"
+    ],
+    "date": "2025-03-18T00:00:00.000Z",
+    "fileName": "0007-meshingo-cli.md",
+    "url": "https://github.com/FoamScience/meshingo/blob/main/ADRs/0007-meshingo-cli.md"
+  }
+]
