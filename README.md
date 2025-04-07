@@ -20,11 +20,16 @@ A few notes before getting started:
 ```bash
 apptainer pull meshingo.sif oras://ghcr.io/foamscience/meshingo:0.0.1
 apptainer run meshingo.sif info # to see where things are, and what is available
-git clone https://github.com/FoamSciencemeshingo/
+git clone https://github.com/FoamScience/meshingo/
 cd meshingo
 cp <your-stl-file> testing_dataset
-# Get the surrogate that is shipped with the container
-apptainer run meshingo.sif meshingo validate --model /opt/surrogates/Meshingo testing_dataset/<your-stl-file>
+# Use the surrogate that is shipped with the container to get a few case configurations
+apptainer run meshingo.sif 'meshingo validate
+          --model /opt/surrogates/Meshingo --training-set /opt/surrogates/geometric_features.csv
+          testing_dataset/<your-stl-file>'
+# Inspect the respective meshDict files to minimal/maximal cell sizes
+foamDictionary -expand <case_path>/system/meshDict
+apptainer run meshingi.sif 'meshingo --help' # for more stuff to do
 ```
 
 ## First steps

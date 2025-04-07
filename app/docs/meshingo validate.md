@@ -50,4 +50,12 @@ Name for surrogate model
 |-----------------|-------------
 | Required:       | ✓ Yes
 
+#### *--training-set TRAINING_SET*
+
+Path to geometric_features.csv for the training dataset
+
+| Attributes      | &nbsp;
+|-----------------|-------------
+| Required:       | ✓ Yes
+
 
