@@ -28,24 +28,24 @@ predict-cell-size = "predict_cell_size:main"
 bias-geo-features = "bias_geo_features:main"
 validate = "validate_model:main"
 
-[project.optional-dependencies]
-present = [
-    "manim-present>=0.1.0",
-]
-
 [tool.setuptools.packages.find]
 where = ["src"]
 exclude = [
     "build",
-    "optimizer-config.yaml",
+    "stage1",
+    "stage2",
     "outputs",
     "template_case",
     "training_dataset",
+    "testing_dataset",
+    "containers",
+    "ADRs",
     "trials",
-    "presentation",
+    "slidev",
 ]
 
 [tool.uv]
 dev-dependencies = [
     "ipython>=8.32.0",
 ]
+package = true
