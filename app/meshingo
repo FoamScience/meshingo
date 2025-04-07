@@ -172,6 +172,11 @@ meshingo_validate_usage() {
     printf "    Name for surrogate model\n"
     echo
 
+    # :flag.usage
+    printf "  %s\n" "--training-set TRAINING_SET (required)"
+    printf "    Path to geometric_features.csv for the training dataset\n"
+    echo
+
     # :command.usage_fixed_flags
     printf "  %s\n" "--help, -h"
     printf "    Show this help\n"
@@ -423,6 +428,9 @@ meshingo_validate_command() {
   testing_stls="${git_root_folder}/testing_dataset"
   if [ "$(readlink -f "${args[target_stl]}")" != "$(readlink -f "$testing_stls/$(basename ${args[target_stl]})")" ]; then
       cp "${args[target_stl]}" "$testing_stls"
+  fi
+  if [ "$(readlink -f "${args[--training-set]}")" != "$(readlink -f "training_dataset/geometric_features.csv" ]; then
+      cp "${args[--training-set]}" training_dataset/geometric_features.csv
   fi
   echo -e "Computing geometrical features of all STL files found in ${testing_stls}"
   uv run compute-geometric-features  "${testing_stls}"
@@ -851,6 +859,20 @@ meshingo_validate_parse_requirements() {
         fi
         ;;
 
+      # :flag.case
+      --training-set)
+
+        # :flag.case_arg
+        if [[ -n ${2+x} ]]; then
+          args['--training-set']="$2"
+          shift
+          shift
+        else
+          printf "%s\n" "--training-set requires an argument: --training-set TRAINING_SET" >&2
+          exit 1
+        fi
+        ;;
+
       -?*)
         printf "invalid option: %s\n" "$key" >&2
         exit 1
@@ -883,6 +905,10 @@ meshingo_validate_parse_requirements() {
   # :command.required_flags_filter
   if [[ -z ${args['--model']+x} ]]; then
     printf "missing required flag: --model MODEL\n" >&2
+    exit 1
+  fi
+  if [[ -z ${args['--training-set']+x} ]]; then
+    printf "missing required flag: --training-set TRAINING_SET\n" >&2
     exit 1
   fi
 
