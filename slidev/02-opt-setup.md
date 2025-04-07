@@ -49,6 +49,8 @@ level: 2
 
 ## A convenient CLI for the whole workflow
 
+<br/>
+<a class="absolute right-15 text-xl i-carbon:document-multiple-01" href="https://github.com/FoamScience/meshingo/blob/main/app/docs/index.md"> </a>
 Get a good bunch of STL models, and
 
 ```bash {all|1-2|4-5|7-12|14-15|17-18|all}
@@ -187,7 +189,7 @@ hideInToc: false
 layout: two-cols
 ---
 
-## Investigating Objective Functions for Stage 1
+# Investigating Objective Functions for Stage 1
 
 - Best settings for focusing on `CellSize/Count`, and `Mesh Issues`
   - Min Cell Size: **5.48968e-05**

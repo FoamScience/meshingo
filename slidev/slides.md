@@ -6,7 +6,11 @@ fonts:
 title: "Meshingo: A cell size recommender system"
 author: Mohammed Elwardi Fadeli
 keywords: meshing,cfd,bayesian-optimization,optimization,machine-learning,surrogate-model,cfmesh
-info: false
+info: |
+  Leveraging bayesian-optimization algorithms to predict a good-enough cell size starting just from
+  a (meshable) STL model. The optimization is performed on meshing-only OpenFOAM cases using foamBO
+  framework and the trials use cfMesh meshing workflows to mesh the input STLs based on the settings
+  chosen by the bayesian algorithm.
 class: text-center
 drawings:
   persist: false
@@ -32,8 +36,8 @@ themeConfig:
   footer: Bayesian Optimization for CFD meshing tasks
   date: Apr. 2025
 # open graph
-# seoMeta:
-#  ogImage: https://cover.sli.dev
+seoMeta:
+  ogImage: "images/thumbnail.png"
 addons:
   - slidev-addon-python-runner
   - slidev-addon-tikzjax
@@ -59,7 +63,7 @@ hideInToc: true
 
 # Table of Content
 
-<Toc maxDepth="3" />
+<Toc maxDepth=3 />
 
 
 ---

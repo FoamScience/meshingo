@@ -8,9 +8,9 @@ export default defineShikiSetup
             themes
                 : {
                 dark
-                    : 'github-dark',
+                    : 'github-dark-high-contrast',
                 light
-                    : 'light-plus',
+                    : 'github-light-high-contrast',
             },
         }
     })
