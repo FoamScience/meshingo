@@ -3,7 +3,7 @@ name = "meshingo"
 version = "0.0.1"
 description = "A recommender system for optimal mesh cell sizes. Takes only an STL file as input."
 readme = "README.md"
-requires-python = "==3.10"
+requires-python = "==3.10.*"
 dependencies = [
     "pyfoam>=2023.7",
     "trimesh>=4.6.3",

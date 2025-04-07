@@ -97,10 +97,9 @@ def run_trials_with_target_stl(problem_name, target_stl):
     merged.to_csv(f"training_dataset/geometric_features.csv")
     print(f"{target_bn} added to training_dataset/geometric_features.csv")
     shutil.copy(target_stl, f"training_dataset/{target_bn}")
-    shutil.copy(
-        f"{os.path.dirname(target_stl)}/feature_lines/{str(target_bn.replace(".stl",""))}_features.obj",
-        f"training_dataset/{str(target_bn).replace('.stl','.obj')}"
-    )
+    stem = str(target_bn.replace(".stl",""))
+    shutil.copy( f"{os.path.dirname(target_stl)}/feature_lines/{stem}_features.obj",
+                f"training_dataset/{str(target_bn).replace('.stl','.obj')}")
     print(f"{target_stl} and its feature edges copied to training_dataset/")
     # run cases
     cwd = os.getcwd()
