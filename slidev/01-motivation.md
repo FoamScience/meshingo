@@ -100,10 +100,9 @@ hideInToc: false
 
 Try it out now! It's really just one command (at least for the 1st stage)!
 
-```bash {all|9-12|all}
+```bash {all|8-14|all}
 # Get a sample surrogate model; shipped with an Apptainer container
 apptainer pull meshingo.sif oras://ghcr.io/foamscience/meshingo:0.0.1
-
 # Get oriented, see where things are, and what is available
 apptainer run meshingo.sif info
 # Get meshingo out of the container (can also just clone)
@@ -112,10 +111,42 @@ apptainer run meshingo "cp /opt/meshingo meshingo" && cd meshingo
 # Get SLT model in place
 cp '<your-stl-file>' testing_dataset
 # Use the surrogate to get a few (at least 2) case configurations
-apptainer run meshingo.sif 'meshingo validate --model /opt/surrogates/Meshingo testing_dataset/<your-stl-file>'
+apptainer run meshingo.sif 'meshingo validate
+          --model /opt/surrogates/Meshingo
+          --training-set /opt/surrogates/geometric_features.csv
+          testing_dataset/<your-stl-file>'
 
 # Inspect the respective meshDict files to minimal/maximal cell sizes
 foamDictionary -expand <case_path>/system/meshDict
 
-apptainer run meshingi.sif 'meshingo --help' # for more stuff to do
+apptainer run meshingo.sif 'meshingo --help' # for more stuff to do
+```
+
+---
+transition: fade-out
+hideInToc: false
+---
+
+# Instant Cell Size predictions!
+
+You get "objective-oriented" suggestions
+
+```json
+{
+    "125": {
+        "job_id": 2885729,
+        "case_path": "/tmp/meshingo/trials/Meshingo_trial_bd1bd3261cad5dae7e66f3e3f65aa203",
+        "case_name": "Meshingo_trial_bd1bd3261cad5dae7e66f3e3f65aa203",
+        "best_for_objectives": [
+            "SurfaceDifference"
+        ],
+        "predictions": {
+            "CellSizeDecayed": 0.228648880741723,
+            "SurfaceDifference": -0.0279852980695916,
+            "MeshIssues": 1.3640759324078426,
+            "CellCount": 8.473390924663022
+        }
+    },
+    ...
+}
 ```

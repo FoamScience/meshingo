@@ -4,6 +4,7 @@ fonts:
   sans: Fira Sans
   mono: Fira Mono
 title: "Meshingo: A cell size recommender system"
+titleTemplate: "%s"
 author: Mohammed Elwardi Fadeli
 keywords: meshing,cfd,bayesian-optimization,optimization,machine-learning,surrogate-model,cfmesh
 info: |
@@ -11,7 +12,6 @@ info: |
   a (meshable) STL model. The optimization is performed on meshing-only OpenFOAM cases using foamBO
   framework and the trials use cfMesh meshing workflows to mesh the input STLs based on the settings
   chosen by the bayesian algorithm.
-class: text-center
 drawings:
   persist: false
 transition: slide-left
@@ -35,20 +35,20 @@ themeConfig:
   github: https://github.com/FoamScience
   footer: Bayesian Optimization for CFD meshing tasks
   date: Apr. 2025
-# open graph
 seoMeta:
-  ogImage: "images/thumbnail.png"
+  ogImage: "https://foamscience.github.io/meshingo/images/thumbnail.png"
+  ogUrl: "https://foamscience.github.io/meshingo"
+download: https://foamscience.github.io/meshingo/meshingo.pdf"
 addons:
   - slidev-addon-python-runner
   - slidev-addon-tikzjax
 python:
-  installs: ["cowsay"]
-  prelude: |
-    GREETING_FROM_PRELUDE = "Hello, Slidev!"
   loadPackagesFromImports: true
   suppressDeprecationWarnings: true
   alwaysReload: false
   loadPyodideOptions: {}
+
+class: text-center
 ---
 
 # [Meshingo](https://github.com/FoamScience/meshingo): A cell size recommender system
