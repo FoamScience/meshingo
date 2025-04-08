@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Tmate debugging session'
+        required: false
+        default: false
 
 jobs:
   build-and-deploy:
@@ -15,6 +22,12 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        with:
+          detached: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,12 +41,18 @@ jobs:
       - name: Build Slidev site
         working-directory: slidev
         run: |
-          ADR_PATH=../ADRs ADR_REPO=https://github.com/FoamScience/meshingo ADR_REF=main npm run adr
+          ADR_PATH=../ADRs ADR_REPO=https://github.com/FoamScience/meshingo ADR_REF=${{ github.ref_name }} npm run adr
           mv dist/assets/adr-data.json .
           npm run build
           mv adr-data.json dist/assets/
+
+      - name: Export Slidev PDF
+        working-directory: slidev
+        run: |
           sed -i '/^\s*base:\s*/d' vite.config.ts
-          npm run export 
+          cat vite.config.ts
+          # we'd like --with-toc but this buggy on GAs
+          npx slidev export --format pdf --with-clicks
           mv meshingo.pdf dist/
 
       - name: Deploy to GitHub Pages
