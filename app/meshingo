@@ -386,6 +386,21 @@ inspect_args() {
   fi
 }
 
+# :command.user_lib
+# src/lib/filter_libgl_available.sh
+filter_libgl_available() {
+    if command -v ldconfig >/dev/null 2>&1; then
+        if ldconfig -p 2>/dev/null | grep -q 'libGL.so.1'; then
+            return 0
+        fi
+    fi
+    if find /usr/lib /usr/local/lib /lib -name 'libGL.so.1*' 2>/dev/null | grep -q .; then
+        return 0
+    fi
+    echo "❌ Error: libGL.so.1 not found. Please install OpenGL runtime (e.g. libgl1, mesa-libGL, or mesa-gl)."
+    return 1
+}
+
 # :command.command_functions
 # :command.function
 meshingo_install_command() {
@@ -433,7 +448,7 @@ meshingo_validate_command() {
       cp "${args[--training-set]}" training_dataset/geometric_features.csv
   fi
   echo -e "Computing geometrical features of all STL files found in ${testing_stls}"
-  uv run compute-geometric-features  "${testing_stls}"
+  uv run compute-geometric-features --extract-features "${testing_stls}"
   echo -e "\e[32mValidation run \e[0mfor ${args[--model]} surrogate model..."
   uv run validate --name ${args[--model]} --target-stl ${args[target_stl]}
 
@@ -620,6 +635,13 @@ parse_requirements() {
 
     esac
   done
+
+  # :command.user_filter
+  filter_error=$(filter_libgl_available)
+  if [[ -n $filter_error ]]; then
+    echo "$filter_error" >&2
+    exit 1
+  fi
 
 }
 
@@ -1162,7 +1184,7 @@ meshingo_stage2_parse_requirements() {
 
 # :command.initialize
 initialize() {
-  declare -g version="0.1.0"
+  declare -g version="0.0.1"
   set -e
 
 }

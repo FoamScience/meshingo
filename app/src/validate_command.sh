@@ -7,6 +7,6 @@ if [ "$(readlink -f "${args[--training-set]}")" != "$(readlink -f "training_data
     cp "${args[--training-set]}" training_dataset/geometric_features.csv
 fi
 echo -e "Computing geometrical features of all STL files found in ${testing_stls}"
-uv run compute-geometric-features  "${testing_stls}"
+uv run compute-geometric-features --extract-features "${testing_stls}"
 echo -e "\e[32mValidation run \e[0mfor ${args[--model]} surrogate model..."
 uv run validate --name ${args[--model]} --target-stl ${args[target_stl]}

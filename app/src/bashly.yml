@@ -19,7 +19,7 @@ help: |
   &gt; [!IMPORTANT]
   &gt; Experimental at best, still figuring out the best objective functions, parameters to consider, and STL model types to train on.
 
-version: 0.1.0
+version: 0.0.1
 
 dependencies:
   git: install git through your package manager
@@ -27,6 +27,8 @@ dependencies:
   cartesianMesh: source etc/bashrc from an OpenFOAM installation with cfMesh compiled
   surfaceCheck: source etc/bashrc from an OpenFOAM installation
 
+filters:
+  - libgl_available
 
 commands:
 - name: install
