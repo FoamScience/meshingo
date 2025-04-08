@@ -52,7 +52,10 @@ jobs:
           sed -i '/^\s*base:\s*/d' vite.config.ts
           cat vite.config.ts
           # we'd like --with-toc but this buggy on GAs
-          npx slidev export --format pdf --with-clicks
+          npx slidev export --format pdf --with-toc --with-clicks || (
+            echo "Failed with TOC and clicks, retrying without..."
+            npx slidev export --format pdf
+          )
           mv meshingo.pdf dist/
 
       - name: Deploy to GitHub Pages
