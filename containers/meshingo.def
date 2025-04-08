@@ -1,0 +1,97 @@
+# ---------------------------------------------------------------------------
+#
+# Create Apptainer file for Meshing, storing a sample surrogate model
+#
+# Build
+#   apptainer build meshingo.sif meshingo.def
+#
+# Note
+#   apptainer version 1.3.6
+#
+# ---------------------------------------------------------------------------
+Bootstrap: localimage
+From: {{ CONTAINERS_DIR }}/basic/{{ BASE_CONTAINER }}.sif
+
+%arguments
+    BASE_CONTAINER=opencfd-openfoam
+    OS_DISTRO=ubuntu
+    OS_VERSION=24.04
+    MPI_IMPLEMENTATION=openmpi
+    MPI_VERSION=4.1.5
+    FRAMEWORK_VERSION=2312
+    FRAMEWORK_GIT_REF=default
+
+%files
+    {{ CONTAINERS_DIR }}/../../stage1/Meshingo_experiment.json /opt/surrogates/Meshingo_experiment.json
+    {{ CONTAINERS_DIR }}/../../stage1/Meshingo_client_state.json /opt/surrogates/Meshingo_client_state.json
+    {{ CONTAINERS_DIR }}/../../stage1/Meshingo_frontier_report.csv /opt/surrogates/Meshingo_frontier_report.csv
+    {{ CONTAINERS_DIR }}/../../training_dataset/geometric_features.csv /opt/surrogates/geometric_features.csv
+
+%post -c /bin/bash
+    apt update && DEBIAN_FRONTEND=noninteractive apt install -y libgl1
+    set -e
+    curl -LsSf https://astral.sh/uv/install.sh | XDG_BIN_HOME=/usr sh
+    source /usr/env
+    git clone https://github.com/FoamScience/meshingo /opt/meshingo
+    cd /opt/meshingo
+    git checkout {{ BRANCH }}
+    mkdir /opt/cache
+    export UV_CACHE_DIR=/opt/cache
+    uv sync
+    uv add six
+    rm -rf $UV_CACHE_DIR
+    ln -s /opt/meshingo/app/meshingo /usr/bin/meshingo
+    chmod +x /usr/bin/meshingo
+
+    export UV_ENV_FILE=/opt/meshingo/uv_env
+    echo "export UV_ENV_FILE=$UV_ENV_FILE" > $UV_ENV_FILE
+    echo "export UV_NO_SYNC=1" >> $UV_ENV_FILE
+    echo "export UV_NO_CONFIG=1" >> $UV_ENV_FILE
+    echo "export UV_COMPILE_BYTECODE=1" >> $UV_ENV_FILE
+    echo "export UV_FROZEN=1" >> $UV_ENV_FILE
+    echo "export UV_PROJECT_ENVIRONMENT=/opt/meshingo/.venv" >> $UV_ENV_FILE
+    echo "export UV_PROJECT=/opt/meshingo" >> $UV_ENV_FILE
+    echo "export UV_LINK_MODE=copy" >> $UV_ENV_FILE
+
+    commit=$(git rev-parse --short HEAD)
+    jq --arg app meshingo --arg branch {{ BRANCH }} \
+        --arg commit $commit \
+        '.[$app] |= if . == null then
+        {
+            surrogates_path: "/opt/surrogates",
+            bin: "/opt/meshingo/app/meshingo",
+            ADRs: "/opt/meshingo/ADRs",
+            commit: $commit,
+            source_script: "/usr/env",
+            uv_env: "/opt/meshingo/uv_env",
+            side_effects: [
+                "Reads/Writes to default UV_CACHE_DIR if sync/build/install is needed (in hosts home folder)"
+            ],
+            branch: $branch
+        }
+        else . +
+        {
+            surrogates_path: "/opt/surrogates",
+            bin: "/opt/meshingo/app/meshingo",
+            ADRs: "/opt/meshingo/ADRs",
+            commit: $commit,
+            source_script: "/usr/env",
+            uv_env: "/opt/meshingo/uv_env",
+            side_effects: [
+                "Reads/Writes to default UV_CACHE_DIR if sync/build/install is needed (in hosts home folder)"
+            ],
+            branch: $branch
+        } end' /apps.json > /tmp/apps.json
+    mv /tmp/apps.json /apps.json
+
+%runscript
+    #!/bin/bash
+    if [ $# -eq 0 ]; then
+        /bin/bash
+    else
+        /bin/bash -c "$@"
+    fi
+
+%labels
+    Maintainer Mohammed Elwardi Fadeli
+    Description Meshingo cell size recommender system
