@@ -38,6 +38,7 @@ themeConfig:
 seoMeta:
   ogImage: "https://foamscience.github.io/meshingo/images/thumbnail.png"
   ogUrl: "https://foamscience.github.io/meshingo"
+  twitterImage: "https://foamscience.github.io/meshingo/images/thumbnail.png"
 download: https://foamscience.github.io/meshingo/meshingo.pdf"
 addons:
   - slidev-addon-python-runner
@@ -49,6 +50,7 @@ python:
   loadPyodideOptions: {}
 
 class: text-center
+hideInToc: true
 ---
 
 # [Meshingo](https://github.com/FoamScience/meshingo): A cell size recommender system

@@ -29,8 +29,6 @@ hideInToc: false
 # Disclaimers
 
 
-<br/>
-
 
 > #### Focus of the presentation
 > Because of the <ins>sheer amount of unpredictability</ins> associated with this kind of ML model,
@@ -124,7 +122,7 @@ apptainer run meshingo.sif 'meshingo --help' # for more stuff to do
 
 ---
 transition: fade-out
-hideInToc: false
+hideInToc: true
 ---
 
 # Instant Cell Size predictions!
