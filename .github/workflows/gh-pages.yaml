@@ -32,6 +32,9 @@ jobs:
           mv dist/assets/adr-data.json .
           npm run build
           mv adr-data.json dist/assets/
+          sed -i '/^\s*base:\s*/d' vite.config.ts
+          npm run export 
+          mv meshingo.pdf dist/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
