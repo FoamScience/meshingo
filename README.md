@@ -25,7 +25,8 @@ cd meshingo
 cp <your-stl-file> testing_dataset
 # Use the surrogate that is shipped with the container to get a few case configurations
 apptainer run meshingo.sif 'meshingo validate
-          --model /opt/surrogates/Meshingo --training-set /opt/surrogates/geometric_features.csv
+          --model /opt/surrogates/Meshingo
+          --training-set /opt/surrogates/geometric_features.csv
           testing_dataset/<your-stl-file>'
 # Inspect the respective meshDict files to minimal/maximal cell sizes
 foamDictionary -expand <case_path>/system/meshDict

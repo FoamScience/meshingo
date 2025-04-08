@@ -22,7 +22,7 @@ The tuning stage can be configured into the following directions:
 
 | Attributes       | &nbsp;
 |------------------|-------------
-| Version:         | 0.1.0
+| Version:         | 0.0.1
 
 ## Usage
 
