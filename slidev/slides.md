@@ -39,7 +39,7 @@ seoMeta:
   ogImage: "https://foamscience.github.io/meshingo/images/thumbnail.png"
   ogUrl: "https://foamscience.github.io/meshingo"
   twitterImage: "https://foamscience.github.io/meshingo/images/thumbnail.png"
-download: https://foamscience.github.io/meshingo/meshingo.pdf"
+download: https://foamscience.github.io/meshingo/meshingo.pdf
 addons:
   - slidev-addon-python-runner
   - slidev-addon-tikzjax
