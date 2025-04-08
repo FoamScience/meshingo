@@ -1,6 +1,6 @@
 # Meshingo: A mesh size recommender system
 
-> For a quick presentation of current state, look at
+> For a quick recap of current state, look at
 > [this presentation](https://foamscience.github.io/meshingo)
 
 This is basically **an experimental** "unconventional" recommender system for minimum mesh cell
@@ -8,10 +8,10 @@ sizes that would result in a good balance between **full geometrical feature cap
 and **minimal total mesh cell count**.
 
 A few notes before getting started:
-- The recommender system is **biased towards producing meshes with bigger cell sizes** on purpose
+- The recommender system is currently **biased towards producing meshes with bigger cell sizes** on purpose
 - There are measures in place to prevent over-fitting on the training dataset
   but this is difficult to guarantee; it's important to always add validation trials, which is
-  skipped for now.
+  not yet implemented (check [The validation ADR](https://github.com/FoamScience/meshingo/blob/main/ADRs/0005-cross-validation.md))
 - The recommender system is fine-tuned for less-than-one-hour meshing operations which
   are carried out through [cfMesh] and that can be performed on a laptop.
 
@@ -30,7 +30,43 @@ apptainer run meshingo.sif 'meshingo validate
           testing_dataset/<your-stl-file>'
 # Inspect the respective meshDict files to minimal/maximal cell sizes
 foamDictionary -expand <case_path>/system/meshDict
-apptainer run meshingi.sif 'meshingo --help' # for more stuff to do
+apptainer run meshingo.sif 'meshingo --help' # for more stuff to do
+```
+
+Sample output (you may have to run the meshing yourself):
+```json
+{
+    "125": {
+        "job_id": 2885729,
+        "case_path": "/tmp/meshingo/trials/Meshingo_trial_bd1bd3261cad5dae7e66f3e3f65aa203",
+        "case_name": "Meshingo_trial_bd1bd3261cad5dae7e66f3e3f65aa203",
+        "best_for_objectives": [
+            "SurfaceDifference"
+        ],
+        "predictions": {
+            "CellSizeDecayed": 0.228648880741723,
+            "SurfaceDifference": -0.0279852980695916,
+            "MeshIssues": 1.3640759324078426,
+            "CellCount": 8.473390924663022
+        }
+    },
+    "126": {
+        "job_id": 2885736,
+        "case_path": "/tmp/meshingo/trials/Meshingo_trial_0b200747132a23ac55a4b6b81158debc",
+        "case_name": "Meshingo_trial_0b200747132a23ac55a4b6b81158debc",
+        "best_for_objectives": [
+            "CellSizeDecayed",
+            "MeshIssues",
+            "CellCount"
+        ],
+        "predictions": {
+            "CellSizeDecayed": 0.1707714887746875,
+            "SurfaceDifference": 0.0001630206829666,
+            "MeshIssues": -0.0247128292332128,
+            "CellCount": 7.1427794243628
+        }
+    }
+}
 ```
 
 ## First steps
@@ -106,10 +142,6 @@ Essentially, instead of using a training set of surface STLs, the geometric feat
 fixed, and inferred from the target STL. The optimizer then using the surrogate model
 from the previous stage to optimize the previous objectives **and their confidence intervals**
 (that the surrogate model provides) on the coefficients set of parameters from stage 1.
-
-The verdict is then given in JSON format (`stage2/verdict.json`) containing the top 3
-pareto-frontier points from stage 2 optimization which are associated with the highest
-confidence.
 
 
 [cfMesh]: https://cfmesh.com/cfmesh-open-source/
